@@ -11,22 +11,28 @@ import GameplayKit
 class GameScene: SKScene {
     
     private var frameNode : SKShapeNode?
-    private var spinnyNode : SKShapeNode?
+    private var brickNode : SKShapeNode?
     
     override func didMove(to view: SKView) {
-        self.frameNode = SKShapeNode.init(rectOf: CGSize(width: 310, height: 620), cornerRadius: 0)
+        let wBricks: CGFloat = 10
+        let hBricks: CGFloat = 20
+        let padding: CGFloat = 20
+        
+        let brickSize = min((self.size.width - 2 * padding) / wBricks,
+                            (self.size.height - 2 * padding) / hBricks).rounded(.towardZero)
+        
+        self.frameNode = SKShapeNode.init(rectOf: CGSize(width: brickSize * wBricks, height: brickSize * hBricks))
         if let frameNode = self.frameNode {
             frameNode.lineWidth = 2
             frameNode.strokeColor = SKColor.orange
             self.addChild(frameNode)
         }
         
-        let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
+        self.brickNode = SKShapeNode.init(rectOf: CGSize.init(width: brickSize, height: brickSize))
         
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.lineWidth = 2.5
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
+        if let brickNode = self.brickNode {
+            brickNode.lineWidth = 2
+            brickNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
                                               SKAction.fadeOut(withDuration: 0.5),
                                               SKAction.removeFromParent()]))
         }
@@ -37,7 +43,7 @@ class GameScene: SKScene {
     }
     
     override func mouseDown(with event: NSEvent) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
+        if let n = self.brickNode?.copy() as! SKShapeNode? {
             n.position = event.location(in: self)
             n.strokeColor = SKColor.orange
             self.addChild(n)
