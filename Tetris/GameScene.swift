@@ -18,6 +18,16 @@ class GameScene: SKScene {
     private var brickNode: SKShapeNode?
     private var tetris: TetrisBitboard?
     private var lastUpdate: TimeInterval?
+    private var tetrominoCatalog: [Tetromino] = [
+        Tetromino(region: Region(Vec2(3, 0), Vec2(4, 1)), data: [1, 1, 1, 1]),
+        Tetromino(region: Region(Vec2(4, 0), Vec2(2, 2)), data: [1, 1,
+                                                                 1, 1]),
+        Tetromino(region: Region(Vec2(3, 0), Vec2(3, 2)), data: [1, 1, 1,
+                                                                 0, 0, 1]),
+        Tetromino(region: Region(Vec2(3, 0), Vec2(3, 2)), data: [1, 1, 1,
+                                                                 1, 0, 0]),
+        Tetromino(region: Region(Vec2(3, 0), Vec2(3, 2)), data: [0, 1, 1,
+                                                                 1, 1, 0])]
     
     private var usedNodes: [SKShapeNode] = []
         
@@ -48,25 +58,8 @@ class GameScene: SKScene {
     
     private func span() {
         if let tetris = self.tetris {
-            let origin = Vec2(0, 0)
-            
-            let shape = {
-                switch Int.random(in: 0..<4) {
-                case 0:
-                    return Tetromino(region: Region(origin, Vec2(1, 4)), data: [1, 1, 1, 1])
-                case 1:
-                    return Tetromino(region: Region(origin, Vec2(2, 2)), data: [1, 1,
-                                                                         1, 1])
-                case 2:
-                    return Tetromino(region: Region(origin, Vec2(3, 2)), data: [1, 1, 1,
-                                                                         0, 0, 1])
-                default:
-                    return Tetromino(region: Region(origin, Vec2(3, 2)), data: [0, 1, 1,
-                                                                         1, 1, 0])
-                }
-            }()
-            
-            tetris.span(instance: shape, val: 5)
+            let t = tetrominoCatalog[Int.random(in: 0..<tetrominoCatalog.count)]
+            tetris.span(instance: t, val: 5)
         }
     }
     
