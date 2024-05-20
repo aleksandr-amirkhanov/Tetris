@@ -16,7 +16,9 @@ class Tetromino: Bitboard {
         }
         
         for index in 0..<data.count {
-            setBuffer(index % region.w, index / region.w, data[index])
+            setBuffer(region.x + index % region.w,
+                      region.y + index / region.w,
+                      data[index])
         }
     }
 }
