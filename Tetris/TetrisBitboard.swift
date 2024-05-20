@@ -22,4 +22,15 @@ class TetrisBitboard: Bitboard {
             }
         }
     }
+    
+    func step() {
+        // Currently it is a naive implementation
+        let r = region
+        for x in r.x..<r.xMax {
+            for y in (r.y..<r.yMax).reversed() {
+                setBuffer(x, y + 1, getBufferValue(x, y))
+                setBuffer(x, y, 0)
+            }
+        }
+    }
 }

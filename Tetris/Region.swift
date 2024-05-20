@@ -50,7 +50,7 @@ struct Region {
     }
     
     func contains(_ x: Int, _ y: Int) -> Bool {
-        return x >= self.x && x <= self.xMax && y >= self.y && y <= self.yMax
+        return x >= self.x && x < self.xMax && y >= self.y && y < self.yMax
     }
     
     func contains(_ another: Region) -> Bool {

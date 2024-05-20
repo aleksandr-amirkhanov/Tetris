@@ -15,52 +15,28 @@ class GameScene: SKScene {
     
     private var brickSize: Int?
     
-    private var frameNode : SKShapeNode?
-    private var brickNode : SKShapeNode?
+    private var brickNode: SKShapeNode?
     private var tetris: TetrisBitboard?
+    private var lastUpdate: TimeInterval?
     
+    private var usedNodes: [SKShapeNode] = []
+        
     override func didMove(to view: SKView) {
         let brickSize = Int(min((self.size.width - 2 * CGFloat(padding)) / CGFloat(wBricks),
                             (self.size.height - 2 * CGFloat(padding)) / CGFloat(hBricks)).rounded(.towardZero))
         self.brickSize = brickSize
         
-        self.frameNode = SKShapeNode.init(rectOf: CGSize(width: brickSize * wBricks, height: brickSize * hBricks))
-        if let frameNode {
-            frameNode.lineWidth = 2
-            frameNode.strokeColor = SKColor.orange
-            self.addChild(frameNode)
-        }
+        let frameNode = SKShapeNode.init(rectOf: CGSize(width: brickSize * wBricks, height: brickSize * hBricks))
+        frameNode.lineWidth = 2
+        frameNode.strokeColor = SKColor.orange
+        self.addChild(frameNode)
         
         self.brickNode = SKShapeNode.init(rectOf: CGSize.init(width: brickSize, height: brickSize))
         if let brickNode {
             brickNode.lineWidth = 2
-            brickNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-                                              SKAction.removeFromParent()]))
         }
         
-        self.tetris = TetrisBitboard(region: Region(0, 0, wBricks, hBricks));
-        if let tetris = self.tetris {
-            let origin = Vec2(0, 0)
-            
-            let straight = Tetromino(region: Region(origin, Vec2(4, 4)), data: [0, 1, 0, 0,
-                                                                                0, 1, 0, 0,
-                                                                                0, 1, 0, 0,
-                                                                                0, 1, 0, 0])
-            
-            let square = Tetromino(region: Region(origin, Vec2(2, 2)), data: [1, 1,
-                                                                              1, 1])
-            
-            let tShape = Tetromino(region: Region(origin, Vec2(3, 3)), data: [0, 0, 0,
-                                                                              1, 1, 1,
-                                                                              0, 0, 1])
-            
-            let skew = Tetromino(region: Region(origin, Vec2(3, 3)), data: [0, 0, 0,
-                                                                            0, 1, 1,
-                                                                            1, 1, 0])
-            
-            tetris.span(instance: skew, val: 5)
-        }
+        self.tetris = TetrisBitboard(region: Region(0, 0, wBricks, hBricks))
     }
     
     private func locate(x: Int, y: Int, brickSize: Int) -> CGPoint {
@@ -70,7 +46,36 @@ class GameScene: SKScene {
         return CGPoint(x: ox + x * brickSize, y: oy - y * brickSize)
     }
     
-    override func keyDown(with event: NSEvent) {
+    private func span() {
+        if let tetris = self.tetris {
+            let origin = Vec2(0, 0)
+            
+            let shape = {
+                switch Int.random(in: 0..<4) {
+                case 0:
+                    return Tetromino(region: Region(origin, Vec2(1, 4)), data: [1, 1, 1, 1])
+                case 1:
+                    return Tetromino(region: Region(origin, Vec2(2, 2)), data: [1, 1,
+                                                                         1, 1])
+                case 2:
+                    return Tetromino(region: Region(origin, Vec2(3, 2)), data: [1, 1, 1,
+                                                                         0, 0, 1])
+                default:
+                    return Tetromino(region: Region(origin, Vec2(3, 2)), data: [0, 1, 1,
+                                                                         1, 1, 0])
+                }
+            }()
+            
+            tetris.span(instance: shape, val: 5)
+        }
+    }
+    
+    private func updateVisuals() {
+        for node in usedNodes {
+            node.removeFromParent()
+        }
+        usedNodes.removeAll()
+        
         if let tetris = self.tetris {
             let r = tetris.region
             for x in r.x..<r.xMax {
@@ -83,6 +88,7 @@ class GameScene: SKScene {
                                 n.position = locate(x: x, y: y, brickSize: brickSize)
                                 n.strokeColor = SKColor.orange
                                 self.addChild(n)
+                                usedNodes.append(n)
                             }
                         }
                     }
@@ -91,7 +97,30 @@ class GameScene: SKScene {
         }
     }
     
+    private func updateLogic() {
+        if let tetris {
+            tetris.step()
+        }
+    }
+    
+    override func keyDown(with event: NSEvent) {
+        span()
+        updateVisuals()
+    }
+    
     override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
+        if let lastUpdate {
+            let delta = currentTime - lastUpdate
+            
+            if (Float(delta) > 0.5) {
+                updateLogic()
+                updateVisuals()
+                self.lastUpdate = currentTime
+            }
+        }
+        else {
+            updateVisuals()
+            self.lastUpdate = currentTime
+        }
     }
 }
