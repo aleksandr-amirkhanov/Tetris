@@ -26,6 +26,19 @@ class TetrisBitboard: Bitboard {
         }
     }
     
+    func hasActive() -> Bool {
+        let r = region
+        for x in r.x..<r.xMax {
+            for y in (r.y..<r.yMax) {
+                if getBufferValue(x, y) & activeMask > 0 {
+                    return true
+                }
+            }
+        }
+        
+        return false
+    }
+    
     fileprivate func moveDown() {
         let r = region
         
