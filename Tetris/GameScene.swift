@@ -97,8 +97,18 @@ class GameScene: SKScene {
     }
     
     override func keyDown(with event: NSEvent) {
-        if tetris?.hasActive() == false {
-            span()
+        if event.keyCode == 123 {
+            // left
+            tetris?.moveLeft()
+        } else if event.keyCode == 124 {
+            // right
+            tetris?.moveRight()
+        }
+        else {
+            // anything else
+            if tetris?.hasActive() == false {
+                span()
+            }
         }
         updateVisuals()
     }
@@ -107,7 +117,7 @@ class GameScene: SKScene {
         if let lastUpdate {
             let delta = currentTime - lastUpdate
             
-            if (Float(delta) > 0.1) {
+            if (Float(delta) > 0.2) {
                 updateLogic()
                 updateVisuals()
                 self.lastUpdate = currentTime

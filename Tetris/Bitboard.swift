@@ -34,10 +34,14 @@ class Bitboard {
     
     func hasFlag(x: Int, y: Int, flag: Int) -> Bool? {
         if let v = getBufferValue(x, y) {
-            return v & flag > 0
+            return hasFlag(buffVal: v, flag: flag)
         }
         
         return nil
+    }
+    
+    func hasFlag(buffVal: Int, flag: Int) -> Bool? {
+        return buffVal & flag > 0
     }
     
     func modifyBuffer(modifier: (Int) -> Int) {

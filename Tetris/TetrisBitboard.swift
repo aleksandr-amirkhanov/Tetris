@@ -34,7 +34,45 @@ class TetrisBitboard: Bitboard {
         return false
     }
     
-    fileprivate func moveDown() {
+    func moveLeft() {
+        if !canMove(shift: Vec2(-1, 0)) {
+            return
+        }
+        
+        let r = region
+        
+        for x in r.x+1..<r.xMax {
+            for y in r.y..<r.yMax {
+                if hasFlag(x: x, y: y, flag: activeMask) == true {
+                    setBufferValue(x - 1, y , getBufferValue(x, y)!)
+                    setBufferValue(x, y, 0)
+                }
+            }
+        }
+    }
+    
+    func moveRight() {
+        if !canMove(shift: Vec2(1, 0)) {
+            return
+        }
+        
+        let r = region
+        
+        for x in (r.x..<r.xMax-1).reversed() {
+            for y in r.y..<r.yMax {
+                if hasFlag(x: x, y: y, flag: activeMask) == true {
+                    setBufferValue(x + 1, y , getBufferValue(x, y)!)
+                    setBufferValue(x, y, 0)
+                }
+            }
+        }
+    }
+    
+    fileprivate func moveDown() -> Bool {
+        if !canMove(shift: Vec2(0, 1)) {
+            return false
+        }
+        
         let r = region
         
         for x in r.x..<r.xMax {
@@ -45,13 +83,15 @@ class TetrisBitboard: Bitboard {
                 }
             }
         }
+        
+        return true
     }
     
     fileprivate func setInactive() {
         modifyBuffer(modifier: { (v: Int) -> Int in return v & ~activeMask })
     }
     
-    fileprivate func canMove() -> Bool {
+    fileprivate func canMove(shift: Vec2) -> Bool {
         let r = region
         
         for x in r.x..<r.xMax {
@@ -61,12 +101,12 @@ class TetrisBitboard: Bitboard {
                     continue
                 }
                 
-                let onBottom = !region.contains(x, y + 1)
-                if onBottom {
+                let outOfRegion = !region.contains(x + shift.x, y + shift.y)
+                if outOfRegion {
                     return false
                 }
                 
-                let hasSpace = getBufferValue(x, y + 1) == 0 || hasFlag(x: x, y: y + 1, flag: activeMask) == true
+                let hasSpace = getBufferValue(x + shift.x, y + shift.y) == 0 || hasFlag(x: x + shift.x, y: y + shift.y, flag: activeMask) == true
                 if !hasSpace {
                     return false
                 }
@@ -77,9 +117,7 @@ class TetrisBitboard: Bitboard {
     }
     
     func step() {
-        if canMove() {
-            moveDown()
-        } else {
+        if !moveDown() {
             setInactive()
         }
     }
