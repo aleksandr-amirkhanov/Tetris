@@ -16,23 +16,18 @@ class TetrisBitboard: Bitboard {
             return
         }
         
-        let ir = instance.region
-        for x in ir.x..<ir.xMax {
-            for y in ir.y..<ir.yMax {
-                if (instance.getBufferValue(x, y) > 0) {
-                    setBuffer(x, y, val ^ activeMask)
-                }
+        for i in 0..<instance.buffer.count {
+            if instance.buffer[i] > 0 {
+                let (x, y) = instance.getRegionIndex(i)
+                setBufferValue(x, y, val ^ activeMask)
             }
         }
     }
     
     func hasActive() -> Bool {
-        let r = region
-        for x in r.x..<r.xMax {
-            for y in (r.y..<r.yMax) {
-                if getBufferValue(x, y) & activeMask > 0 {
-                    return true
-                }
+        for v in buffer {
+            if v & activeMask > 0 {
+                return true
             }
         }
         
@@ -44,33 +39,24 @@ class TetrisBitboard: Bitboard {
         
         for x in r.x..<r.xMax {
             for y in (r.y..<r.yMax-1).reversed() {
-                if getBufferValue(x, y) & activeMask > 0 {
-                    setBuffer(x, y + 1 , getBufferValue(x, y))
-                    setBuffer(x, y, 0)
+                if hasFlag(x: x, y: y, flag: activeMask) == true {
+                    setBufferValue(x, y + 1 , getBufferValue(x, y)!)
+                    setBufferValue(x, y, 0)
                 }
             }
         }
     }
     
     fileprivate func setInactive() {
-        let r = region
-        
-        for x in r.x..<r.xMax {
-            for y in (r.y..<r.yMax).reversed() {
-                let v = getBufferValue(x, y)
-                if v & activeMask > 0 {
-                    setBuffer(x, y, v ^ activeMask)
-                }
-            }
-        }
+        modifyBuffer(modifier: { (v: Int) -> Int in return v & ~activeMask })
     }
     
     fileprivate func canMove() -> Bool {
         let r = region
         
         for x in r.x..<r.xMax {
-            for y in (r.y+1..<r.yMax).reversed() {
-                let isActive = getBufferValue(x, y) & activeMask > 0
+            for y in (r.y..<r.yMax).reversed() {
+                let isActive = hasFlag(x: x, y: y, flag: activeMask) == true
                 if !isActive {
                     continue
                 }
@@ -80,7 +66,7 @@ class TetrisBitboard: Bitboard {
                     return false
                 }
                 
-                let hasSpace = getBufferValue(x, y + 1) == 0 || getBufferValue(x, y + 1) & activeMask > 0
+                let hasSpace = getBufferValue(x, y + 1) == 0 || hasFlag(x: x, y: y + 1, flag: activeMask) == true
                 if !hasSpace {
                     return false
                 }

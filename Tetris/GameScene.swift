@@ -73,15 +73,15 @@ class GameScene: SKScene {
             let r = tetris.region
             for x in r.x..<r.xMax {
                 for y in r.y..<r.yMax {
-                    let v = tetris.getBufferValue(x, y)
-                    
-                    if v > 0 {
-                        if let brickSize {
-                            if let n = self.brickNode?.copy() as! SKShapeNode? {
-                                n.position = locate(x: x, y: y, brickSize: brickSize)
-                                n.strokeColor = SKColor.orange
-                                self.addChild(n)
-                                usedNodes.append(n)
+                    if let v = tetris.getBufferValue(x, y) {
+                        if v > 0 {
+                            if let brickSize {
+                                if let n = self.brickNode?.copy() as! SKShapeNode? {
+                                    n.position = locate(x: x, y: y, brickSize: brickSize)
+                                    n.strokeColor = SKColor.orange
+                                    self.addChild(n)
+                                    usedNodes.append(n)
+                                }
                             }
                         }
                     }
