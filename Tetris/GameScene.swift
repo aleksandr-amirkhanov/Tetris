@@ -32,7 +32,7 @@ class GameScene: SKScene {
                           0, 0, 1, 0,
                           0, 0, 1, 0,
                           0, 0, 1, 0]],
-                 colorCode: 0),
+                 colorCode: 1),
         Tetromino(region: Region(Vec2(3, -1), Vec2(4, 4)),
                   data: [[0, 0, 0, 0,
                           1, 1, 1, 0,
@@ -50,7 +50,7 @@ class GameScene: SKScene {
                           0, 1, 1, 0,
                           0, 1, 0, 0,
                           0, 0, 0, 0]],
-                  colorCode: 1),
+                  colorCode: 2),
         Tetromino(region: Region(Vec2(3, -1), Vec2(4, 4)),
                   data: [[0, 0, 0, 0,
                           1, 1, 1, 0,
@@ -68,7 +68,7 @@ class GameScene: SKScene {
                           0, 1, 0, 0,
                           0, 1, 1, 0,
                           0, 0, 0, 0]],
-                  colorCode: 2),
+                  colorCode: 3),
         Tetromino(region: Region(Vec2(3, -1), Vec2(4, 4)),
                   data: [[0, 0, 0, 0,
                           1, 1, 1, 0,
@@ -86,7 +86,7 @@ class GameScene: SKScene {
                           0, 1, 0, 0,
                           0, 1, 0, 0,
                           0, 0, 0, 0]],
-                  colorCode: 3),
+                  colorCode: 4),
         Tetromino(region: Region(Vec2(3, -1), Vec2(4, 4)),
                   data: [[0, 0, 0, 0,
                           0, 1, 1, 0,
@@ -96,7 +96,7 @@ class GameScene: SKScene {
                           1, 1, 0, 0,
                           0, 1, 0, 0,
                           0, 0, 0, 0]],
-                  colorCode: 4),
+                  colorCode: 5),
         Tetromino(region: Region(Vec2(3, -1), Vec2(4, 4)),
                   data: [[0, 0, 0, 0,
                           1, 1, 0, 0,
@@ -106,21 +106,21 @@ class GameScene: SKScene {
                           0, 1, 1, 0,
                           0, 1, 0, 0,
                           0, 0, 0, 0]],
-                  colorCode: 5),
+                  colorCode: 6),
         Tetromino(region: Region(Vec2(3, -1), Vec2(4, 4)),
                   data: [[0, 0, 0, 0,
                           0, 1, 1, 0,
                           0, 1, 1, 0,
                           0, 0, 0, 0]],
-                  colorCode: 6)]
+                  colorCode: 7)]
     
-    private var colors = [0: SKColor(red: 203/255, green: 19/255, blue: 10/255, alpha: 1),
-                          1: SKColor(red: 0, green: 131/255, blue: 175/255, alpha: 1),
-                          2: SKColor(red: 199/255, green: 84/255, blue: 0, alpha: 1),
-                          3: SKColor(red: 0, green: 32/255, blue: 192/255, alpha: 1),
-                          4: SKColor(red: 141/255, green: 5/255, blue: 141/255, alpha: 1),
-                          5: SKColor(red: 5/255, green: 148/255, blue: 0, alpha: 1),
-                          6: SKColor(red: 149/255, green: 122/255, blue: 0, alpha: 1)]
+    private var colors = [1: SKColor(red: 203/255, green: 19/255, blue: 10/255, alpha: 1),
+                          2: SKColor(red: 0, green: 131/255, blue: 175/255, alpha: 1),
+                          3: SKColor(red: 199/255, green: 84/255, blue: 0, alpha: 1),
+                          4: SKColor(red: 0, green: 32/255, blue: 192/255, alpha: 1),
+                          5: SKColor(red: 141/255, green: 5/255, blue: 141/255, alpha: 1),
+                          6: SKColor(red: 5/255, green: 148/255, blue: 0, alpha: 1),
+                          7: SKColor(red: 149/255, green: 122/255, blue: 0, alpha: 1)]
         
     override func didMove(to view: SKView) {
         let brickSize = Int(min((self.size.width - 2 * CGFloat(padding)) / CGFloat(wBricks),
@@ -170,7 +170,8 @@ class GameScene: SKScene {
                             if let brickSize {
                                 if let n = self.brickNode?.copy() as! SKShapeNode? {
                                     n.position = locate(x: x, y: y, brickSize: brickSize)
-                                    n.strokeColor = SKColor.orange
+                                    n.strokeColor = SKColor.gray
+                                    n.fillColor = colors[v] ?? NSColor.white
                                     self.addChild(n)
                                     usedNodes.append(n)
                                 }
@@ -245,6 +246,11 @@ class GameScene: SKScene {
                 if !move(dy: 1) {
                     if let tetromino = state?.tetromino {
                         self.state?.tetris.place(tetromino: tetromino)
+                        if let rows = self.state?.tetris.completedRows() {
+                            for r in rows {
+                                self.state?.tetris.removeRows(rowNumber: r)
+                            }
+                        }
                         self.state?.tetromino = nil
                         span()
                     }
