@@ -8,16 +8,28 @@
 import Foundation
 
 class Bitboard {
-    let region: Region
-    var buffer: [Int]
+    var region: Region
+    
+    private var b: [Int]
+    var buffer : [Int] {
+        get {
+            b
+        } set {
+            guard newValue.count == self.region.count else {
+                return
+            }
+            
+            b = newValue
+        }
+    }
     
     init(region: Region) {
         self.region = region
-        buffer = Array(repeating: 0, count: region.w * region.h)
+        b = Array(repeating: 0, count: region.w * region.h)
     }
     
     func setBufferValue(_ x: Int, _ y: Int, _ val: Int) {
-        if !region.contains(x, y) {
+        guard region.contains(x, y) else {
             return
         }
         
@@ -25,23 +37,11 @@ class Bitboard {
     }
     
     func getBufferValue(_ x: Int, _ y: Int) -> Int? {
-        if !region.contains(x, y) {
+        guard region.contains(x, y) else {
             return nil
         }
         
         return buffer[getBufferIndex(x, y)]
-    }
-    
-    func hasFlag(x: Int, y: Int, flag: Int) -> Bool? {
-        if let v = getBufferValue(x, y) {
-            return hasFlag(buffVal: v, flag: flag)
-        }
-        
-        return nil
-    }
-    
-    func hasFlag(buffVal: Int, flag: Int) -> Bool? {
-        return buffVal & flag > 0
     }
     
     func modifyBuffer(modifier: (Int) -> Int) {

@@ -14,8 +14,7 @@ struct Region {
     var w : Int {
         get {
             width
-        }
-        set {
+        } set {
             width = max(newValue, 0)
         }
     }
@@ -24,18 +23,30 @@ struct Region {
     var h : Int {
         get {
             height
-        }
-        set {
+        } set {
             height = max(newValue, 0)
         }
     }
     
-    var xMax : Int {
+    var origin: Vec2 {
+        get {
+            return Vec2(x, y)
+        } set {
+            x = newValue.x
+            y = newValue.y
+        }
+    }
+    
+    var xMax: Int {
         return x + w
     }
     
-    var yMax : Int {
+    var yMax: Int {
         return y + h
+    }
+    
+    var count: Int {
+        return w * h
     }
 
     init(_ x: Int, _ y: Int, _ w: Int, _ h: Int) {

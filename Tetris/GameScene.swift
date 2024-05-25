@@ -13,23 +13,99 @@ class GameScene: SKScene {
     let hBricks = 20
     let padding = 20
     
-    private var brickSize: Int?
+    private var state: GameState?
     
-    private var brickNode: SKShapeNode?
-    private var tetris: TetrisBitboard?
     private var lastUpdate: TimeInterval?
-    private var tetrominoCatalog: [Tetromino] = [
-        Tetromino(region: Region(Vec2(3, 0), Vec2(4, 1)), data: [1, 1, 1, 1]),
-        Tetromino(region: Region(Vec2(4, 0), Vec2(2, 2)), data: [1, 1,
-                                                                 1, 1]),
-        Tetromino(region: Region(Vec2(3, 0), Vec2(3, 2)), data: [1, 1, 1,
-                                                                 0, 0, 1]),
-        Tetromino(region: Region(Vec2(3, 0), Vec2(3, 2)), data: [1, 1, 1,
-                                                                 1, 0, 0]),
-        Tetromino(region: Region(Vec2(3, 0), Vec2(3, 2)), data: [0, 1, 1,
-                                                                 1, 1, 0])]
     
+    // Visualisation
+    private var brickSize: Int?
+    private var brickNode: SKShapeNode?
     private var usedNodes: [SKShapeNode] = []
+    
+    private var tetrominoCatalog: [Tetromino] = [
+        Tetromino(region: Region(Vec2(3, -1), Vec2(4, 4)),
+                  data: [[0, 0, 0, 0,
+                          1, 1, 1, 1,
+                          0, 0, 0, 0,
+                          0, 0, 0, 0],
+                         [0, 0, 1, 0,
+                          0, 0, 1, 0,
+                          0, 0, 1, 0,
+                          0, 0, 1, 0]]),
+        Tetromino(region: Region(Vec2(3, -1), Vec2(4, 4)),
+                  data: [[0, 0, 0, 0,
+                          1, 1, 1, 0,
+                          0, 1, 0, 0,
+                          0, 0, 0, 0],
+                         [0, 1, 0, 0,
+                          1, 1, 0, 0,
+                          0, 1, 0, 0,
+                          0, 0, 0, 0],
+                         [0, 0, 0, 0,
+                          0, 1, 0, 0,
+                          1, 1, 1, 0,
+                          0, 0, 0, 0],
+                         [0, 1, 0, 0,
+                          0, 1, 1, 0,
+                          0, 1, 0, 0,
+                          0, 0, 0, 0]]),
+        Tetromino(region: Region(Vec2(3, -1), Vec2(4, 4)),
+                  data: [[0, 0, 0, 0,
+                          1, 1, 1, 0,
+                          1, 0, 0, 0,
+                          0, 0, 0, 0],
+                         [1, 1, 0, 0,
+                          0, 1, 0, 0,
+                          0, 1, 0, 0,
+                          0, 0, 0, 0],
+                         [0, 0, 0, 0,
+                          0, 0, 1, 0,
+                          1, 1, 1, 0,
+                          0, 0, 0, 0],
+                         [0, 1, 0, 0,
+                          0, 1, 0, 0,
+                          0, 1, 1, 0,
+                          0, 0, 0, 0]]),
+        Tetromino(region: Region(Vec2(3, -1), Vec2(4, 4)),
+                  data: [[0, 0, 0, 0,
+                          1, 1, 1, 0,
+                          0, 0, 1, 0,
+                          0, 0, 0, 0],
+                         [0, 1, 0, 0,
+                          0, 1, 0, 0,
+                          1, 1, 0, 0,
+                          0, 0, 0, 0],
+                         [0, 0, 0, 0,
+                          1, 0, 0, 0,
+                          1, 1, 1, 0,
+                          0, 0, 0, 0],
+                         [0, 1, 1, 0,
+                          0, 1, 0, 0,
+                          0, 1, 0, 0,
+                          0, 0, 0, 0]]),
+        Tetromino(region: Region(Vec2(3, -1), Vec2(4, 4)),
+                  data: [[0, 0, 0, 0,
+                          0, 1, 1, 0,
+                          1, 1, 0, 0,
+                          0, 0, 0, 0],
+                         [1, 0, 0, 0,
+                          1, 1, 0, 0,
+                          0, 1, 0, 0,
+                          0, 0, 0, 0]]),
+        Tetromino(region: Region(Vec2(3, -1), Vec2(4, 4)),
+                  data: [[0, 0, 0, 0,
+                          1, 1, 0, 0,
+                          0, 1, 1, 0,
+                          0, 0, 0, 0],
+                         [0, 0, 1, 0,
+                          0, 1, 1, 0,
+                          0, 1, 0, 0,
+                          0, 0, 0, 0]]),
+        Tetromino(region: Region(Vec2(3, -1), Vec2(4, 4)),
+                  data: [[0, 0, 0, 0,
+                          0, 1, 1, 0,
+                          0, 1, 1, 0,
+                          0, 0, 0, 0]])]
         
     override func didMove(to view: SKView) {
         let brickSize = Int(min((self.size.width - 2 * CGFloat(padding)) / CGFloat(wBricks),
@@ -46,7 +122,9 @@ class GameScene: SKScene {
             brickNode.lineWidth = 2
         }
         
-        self.tetris = TetrisBitboard(region: Region(0, 0, wBricks, hBricks))
+        self.state = GameState(tetris: TetrisBitboard(region: Region(0, 0, wBricks, hBricks)))
+        
+        span()
     }
     
     private func locate(x: Int, y: Int, brickSize: Int) -> CGPoint {
@@ -57,10 +135,8 @@ class GameScene: SKScene {
     }
     
     private func span() {
-        if let tetris = self.tetris {
-            let t = tetrominoCatalog[Int.random(in: 0..<tetrominoCatalog.count)]
-            tetris.span(instance: t, val: 5)
-        }
+        let tetromino = tetrominoCatalog[Int.random(in: 0..<tetrominoCatalog.count)].copy()
+        self.state?.tetromino = tetromino
     }
     
     private func updateVisuals() {
@@ -69,10 +145,11 @@ class GameScene: SKScene {
         }
         usedNodes.removeAll()
         
-        if let tetris = self.tetris {
-            let r = tetris.region
-            for x in r.x..<r.xMax {
-                for y in r.y..<r.yMax {
+        if let state {
+            let tetris = state.tetris
+            let r1 = tetris.region
+            for x in r1.x..<r1.xMax {
+                for y in r1.y..<r1.yMax {
                     if let v = tetris.getBufferValue(x, y) {
                         if v > 0 {
                             if let brickSize {
@@ -87,27 +164,58 @@ class GameScene: SKScene {
                     }
                 }
             }
+            
+            if let tetromino = state.tetromino {
+                let r2 = tetromino.region
+                for x in r2.x..<r2.xMax {
+                    for y in r2.y..<r2.yMax {
+                        if let v = state.tetromino?.getBufferWithRotation(x, y) {
+                            if v > 0 {
+                                if let brickSize {
+                                    if let n = self.brickNode?.copy() as! SKShapeNode? {
+                                        n.position = locate(x: x, y: y, brickSize: brickSize)
+                                        n.strokeColor = SKColor.orange
+                                        self.addChild(n)
+                                        usedNodes.append(n)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     
-    private func updateLogic() {
-        if let tetris {
-            tetris.step()
+    fileprivate func move(dx: Int = 0, dy: Int = 0) -> Bool {
+        if let tetromino = state?.tetromino {
+            let modified = tetromino.copy()
+            modified.region.x += dx
+            modified.region.y += dy
+            if state?.tetris.canFit(tetromino: modified) == true {
+                state?.tetromino = modified
+                return true
+            }
         }
+        
+        return false
     }
     
     override func keyDown(with event: NSEvent) {
         if event.keyCode == 123 {
             // left
-            tetris?.moveLeft()
+            _ = move(dx: -1)
         } else if event.keyCode == 124 {
             // right
-            tetris?.moveRight()
-        }
-        else {
-            // anything else
-            if tetris?.hasActive() == false {
-                span()
+            _ = move(dx: 1)
+        } else if event.keyCode == 49 {
+            // spacebar
+            if let tetromino = state?.tetromino {
+                let copy = tetromino.copy()
+                copy.rotation += 1
+                if state?.tetris.canFit(tetromino: copy) == true {
+                    state?.tetromino = copy
+                }
             }
         }
         updateVisuals()
@@ -118,7 +226,13 @@ class GameScene: SKScene {
             let delta = currentTime - lastUpdate
             
             if (Float(delta) > 0.2) {
-                updateLogic()
+                if !move(dy: 1) {
+                    if let tetromino = state?.tetromino {
+                        self.state?.tetris.place(tetromino: tetromino)
+                        self.state?.tetromino = nil
+                        span()
+                    }
+                }
                 updateVisuals()
                 self.lastUpdate = currentTime
             }

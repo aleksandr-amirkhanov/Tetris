@@ -12,6 +12,7 @@
 		1F1D65812BFA981500C14E55 /* Bitboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1D657D2BFA981500C14E55 /* Bitboard.swift */; };
 		1F1D65822BFA981500C14E55 /* Vec2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1D657E2BFA981500C14E55 /* Vec2.swift */; };
 		1F1D65842BFA983500C14E55 /* Region.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1D65832BFA983500C14E55 /* Region.swift */; };
+		1F5DA44F2C010259007A41E0 /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5DA44E2C010259007A41E0 /* GameState.swift */; };
 		1FD227392BCADDE800735F6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD227382BCADDE800735F6A /* AppDelegate.swift */; };
 		1FD2273B2BCADDE800735F6A /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 1FD2273A2BCADDE800735F6A /* GameScene.sks */; };
 		1FD2273D2BCADDE800735F6A /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 1FD2273C2BCADDE800735F6A /* Actions.sks */; };
@@ -27,6 +28,7 @@
 		1F1D657D2BFA981500C14E55 /* Bitboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bitboard.swift; sourceTree = "<group>"; };
 		1F1D657E2BFA981500C14E55 /* Vec2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vec2.swift; sourceTree = "<group>"; };
 		1F1D65832BFA983500C14E55 /* Region.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Region.swift; sourceTree = "<group>"; };
+		1F5DA44E2C010259007A41E0 /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
 		1FD227352BCADDE800735F6A /* Tetris.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tetris.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FD227382BCADDE800735F6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1FD2273A2BCADDE800735F6A /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 				1FD227422BCADDE900735F6A /* Assets.xcassets */,
 				1FD227442BCADDE900735F6A /* Main.storyboard */,
 				1FD227472BCADDE900735F6A /* Tetris.entitlements */,
+				1F5DA44E2C010259007A41E0 /* GameState.swift */,
 			);
 			path = Tetris;
 			sourceTree = "<group>";
@@ -159,6 +162,7 @@
 			files = (
 				1F1D65822BFA981500C14E55 /* Vec2.swift in Sources */,
 				1F1D65812BFA981500C14E55 /* Bitboard.swift in Sources */,
+				1F5DA44F2C010259007A41E0 /* GameState.swift in Sources */,
 				1FD227412BCADDE800735F6A /* ViewController.swift in Sources */,
 				1F1D65842BFA983500C14E55 /* Region.swift in Sources */,
 				1F1D657F2BFA981500C14E55 /* TetrisBitboard.swift in Sources */,
