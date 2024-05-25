@@ -8,7 +8,8 @@
 import Foundation
 
 class Tetromino: Bitboard {
-    private var rotationNum: Int = 0
+    fileprivate var rotationNum: Int = 0
+    
     fileprivate var r: Int = 0
     var rotation: Int {
         get {
@@ -19,12 +20,18 @@ class Tetromino: Bitboard {
         }
     }
     
-    private init(region: Region, data: [Int]) {
-        super.init(region: region)        
+    var colorCode: Int
+    
+    private init(region: Region, data: [Int], colorCode: Int) {
+        self.colorCode = colorCode
+        
+        super.init(region: region)
         self.buffer = data
     }
     
-    init(region: Region, data: [[Int]]) {
+    init(region: Region, data: [[Int]], colorCode: Int) {
+        self.colorCode = colorCode
+        
         super.init(region: region)
         
         for d in data {
@@ -33,7 +40,7 @@ class Tetromino: Bitboard {
     }
     
     func copy() -> Tetromino {
-        let copy = Tetromino(region: self.region, data: self.buffer)
+        let copy = Tetromino(region: self.region, data: self.buffer, colorCode: self.colorCode)
         copy.rotationNum = self.rotationNum
         copy.rotation = self.rotation
         
