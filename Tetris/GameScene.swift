@@ -13,6 +13,12 @@ class GameScene: SKScene {
     let hBricks = 20
     let padding = 20
     
+    let initialSpeed: Float = 0.5
+    let spawnsInLevel = 3
+    let acceleration: Float = 1.1
+    
+    var spawnCounter: Int?
+    
     private var state: GameState?
     
     private var lastUpdate: TimeInterval?
@@ -146,6 +152,7 @@ class GameScene: SKScene {
         }
         
         self.state = GameState(tetris: TetrisBitboard(region: Region(0, 0, wBricks, hBricks)))
+        self.spawnCounter = 0
         
         span()
     }
@@ -169,6 +176,12 @@ class GameScene: SKScene {
         let tetromino = tetrominoCatalog[Int.random(in: 0..<tetrominoCatalog.count)].copy()
         if self.state?.tetris.canFit(tetromino: tetromino) == true {
             self.state?.tetromino = tetromino
+            
+            self.spawnCounter? += 1
+            if self.spawnCounter == spawnsInLevel {
+                self.state?.level += 1
+                self.spawnCounter = 0
+            }
         } else {
             self.state?.gameOver = true
             state.tetris.place(tetromino: tetromino)
@@ -274,6 +287,10 @@ class GameScene: SKScene {
     }
     
     override func update(_ currentTime: TimeInterval) {
+        guard let state else {
+            return
+        }
+        
         guard let lastUpdate else {
             updateVisuals()
             self.lastUpdate = currentTime
@@ -283,9 +300,9 @@ class GameScene: SKScene {
         
         let delta = currentTime - lastUpdate
         
-        if (Float(delta) > 0.2) {
+        if Float(delta) > initialSpeed / powf(acceleration, Float(state.level)) {
             if !move(dy: 1) {
-                if let tetromino = state?.tetromino {
+                if let tetromino = state.tetromino {
                     self.state?.tetris.place(tetromino: tetromino)
                     if let rows = self.state?.tetris.completedRows() {
                         for r in rows {
