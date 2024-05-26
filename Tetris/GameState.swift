@@ -11,6 +11,7 @@ struct GameState {
     var tetris: TetrisBitboard
     var tetromino: Tetromino?
     var level: Int = 0
+    var gameOver: Bool = false
     
     init(tetris: TetrisBitboard, tetromino: Tetromino? = nil, level: Int = 0) {
         self.tetris = tetris
