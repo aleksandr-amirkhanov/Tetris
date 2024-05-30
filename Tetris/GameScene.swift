@@ -172,6 +172,11 @@ class GameScene: SKScene {
         }
         
         self.state?.spawnCounter += 1
+        if let label = self.childNode(withName: "Level") {
+            if let level = self.state?.level {
+                (label as? SKLabelNode)?.text = "level: " + String(level)
+            }
+        }
     }
     
     fileprivate func updateView() {
@@ -262,7 +267,7 @@ class GameScene: SKScene {
                 copy.region.y -= 1
                 state?.tetromino = copy
             }
-        } else if event.keyCode == Key.SpaceBar.rawValue {
+        } else if event.keyCode == Key.UpArrow.rawValue {
             if let tetromino = state?.tetromino {
                 let copy = tetromino.copy()
                 copy.variant += 1

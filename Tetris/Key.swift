@@ -10,6 +10,6 @@ import Foundation
 enum Key: UInt16 {
     case LeftArrow = 0x7b
     case RightArrow = 0x7c
+    case UpArrow = 0x7e
     case DownArrow = 0x7d
-    case SpaceBar = 0x31
 }
