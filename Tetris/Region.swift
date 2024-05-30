@@ -10,7 +10,7 @@ import Foundation
 struct Region {
     var x, y: Int
     
-    private var width = 0
+    fileprivate var width = 0
     var w : Int {
         get {
             width
@@ -19,7 +19,7 @@ struct Region {
         }
     }
     
-    private var height = 0
+    fileprivate var height = 0
     var h : Int {
         get {
             height

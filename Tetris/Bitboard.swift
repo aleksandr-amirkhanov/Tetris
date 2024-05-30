@@ -10,7 +10,7 @@ import Foundation
 class Bitboard {
     var region: Region
     
-    private var b: [Int]
+    fileprivate var b: [Int]
     var buffer : [Int] {
         get {
             b

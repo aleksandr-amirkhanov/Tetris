@@ -8,7 +8,8 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {    
+class GameScene: SKScene {
+    // Game options
     let wBricks = 10
     let hBricks = 20
     let padding = 20
@@ -19,16 +20,16 @@ class GameScene: SKScene {
     
     var spawnCounter: Int?
     
-    private var state: GameState?
+    fileprivate var state: GameState?
     
-    private var lastUpdate: TimeInterval?
+    fileprivate var lastUpdate: TimeInterval?
     
     // Visualisation
-    private var brickSize: Int?
-    private var brickNode: SKShapeNode?
-    private var usedNodes: [SKShapeNode] = []
+    fileprivate var brickSize: Int?
+    fileprivate var brickNode: SKShapeNode?
+    fileprivate var usedNodes: [SKShapeNode] = []
     
-    private var tetrominoCatalog: [Tetromino] = [
+    fileprivate var tetrominoCatalog: [Tetromino] = [
         Tetromino(region: Region(Vec2(3, -1), Vec2(4, 4)),
                   data: [[0, 0, 0, 0,
                           1, 1, 1, 1,
@@ -120,7 +121,7 @@ class GameScene: SKScene {
                           0, 0, 0, 0]],
                   colorCode: 7)]
     
-    private var colours = [1: SKColor(red: 203/255, green: 19/255, blue: 10/255, alpha: 1),
+    fileprivate var colours = [1: SKColor(red: 203/255, green: 19/255, blue: 10/255, alpha: 1),
                            2: SKColor(red: 0, green: 131/255, blue: 175/255, alpha: 1),
                            3: SKColor(red: 199/255, green: 84/255, blue: 0, alpha: 1),
                            4: SKColor(red: 0, green: 32/255, blue: 192/255, alpha: 1),
@@ -128,10 +129,10 @@ class GameScene: SKScene {
                            6: SKColor(red: 5/255, green: 148/255, blue: 0, alpha: 1),
                            7: SKColor(red: 149/255, green: 122/255, blue: 0, alpha: 1)]
     
-    private let backgroundColour1 = NSColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1)
-    private let backgroundColour2 = NSColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1)
-    private let gameOverColour = NSColor.darkGray
-    private let defaultColour = NSColor.darkGray
+    fileprivate let backgroundColour1 = NSColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1)
+    fileprivate let backgroundColour2 = NSColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1)
+    fileprivate let gameOverColour = NSColor.darkGray
+    fileprivate let defaultColour = NSColor.darkGray
         
     override func didMove(to view: SKView) {
         self.backgroundColor = backgroundColour1
@@ -157,14 +158,14 @@ class GameScene: SKScene {
         span()
     }
     
-    private func locate(x: Int, y: Int, brickSize: Int) -> CGPoint {
+    fileprivate func locate(x: Int, y: Int, brickSize: Int) -> CGPoint {
         let ox = -brickSize * (wBricks - 1) / 2
         let oy = brickSize * (hBricks - 1) / 2
         
         return CGPoint(x: ox + x * brickSize, y: oy - y * brickSize)
     }
     
-    private func span() {
+    fileprivate func span() {
         guard let state else {
             return
         }
@@ -188,7 +189,7 @@ class GameScene: SKScene {
         }
     }
     
-    private func updateVisuals() {
+    fileprivate func updateVisuals() {
         guard let brickSize else {
             return
         }
@@ -227,7 +228,7 @@ class GameScene: SKScene {
             let r = tetromino.region
             for x in r.x..<r.xMax {
                 for y in r.y..<r.yMax {
-                    if let v = state.tetromino?.getBufferWithRotation(point: Vec2(x, y)) {
+                    if let v = state.tetromino?.getBuffer(at: Vec2(x, y)) {
                         if v == 0 {
                             continue
                         }
@@ -277,7 +278,7 @@ class GameScene: SKScene {
         } else if event.keyCode == Key.SpaceBar.rawValue {
             if let tetromino = state?.tetromino {
                 let copy = tetromino.copy()
-                copy.rotation += 1
+                copy.variant += 1
                 if state?.tetris.fits(tetromino: copy) == true {
                     state?.tetromino = copy
                 }
@@ -304,9 +305,9 @@ class GameScene: SKScene {
             if !move(dy: 1) {
                 if let tetromino = state.tetromino {
                     self.state?.tetris.place(tetromino: tetromino)
-                    if let rows = self.state?.tetris.filledRows() {
+                    if let rows = self.state?.tetris.completedRows() {
                         for r in rows {
-                            self.state?.tetris.removeRow(number: r)
+                            self.state?.tetris.releaseRow(number: r)
                         }
                     }
                     self.state?.tetromino = nil

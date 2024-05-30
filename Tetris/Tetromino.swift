@@ -8,21 +8,21 @@
 import Foundation
 
 class Tetromino: Bitboard {
-    fileprivate var rotationNum: Int = 0
+    fileprivate var variantsNum: Int = 0
     
     fileprivate var r: Int = 0
-    var rotation: Int {
+    var variant: Int {
         get {
             r
         }
         set {
-            r = rotationNum == 0 ? 0 : newValue % rotationNum
+            r = variantsNum == 0 ? 0 : newValue % variantsNum
         }
     }
     
     var colorCode: Int
     
-    private init(region: Region, data: [Int], colorCode: Int) {
+    fileprivate init(region: Region, data: [Int], colorCode: Int) {
         self.colorCode = colorCode
         
         super.init(region: region)
@@ -35,27 +35,27 @@ class Tetromino: Bitboard {
         super.init(region: region)
         
         for d in data {
-            addRotation(data: d)
+            addVariant(data: d)
         }
     }
     
     func copy() -> Tetromino {
         let copy = Tetromino(region: self.region, data: self.buffer, colorCode: self.colorCode)
-        copy.rotationNum = self.rotationNum
-        copy.rotation = self.rotation
+        copy.variantsNum = self.variantsNum
+        copy.variant = self.variant
         
         return copy
     }
     
-    func getBufferWithRotation(point: Vec2) -> Int? {
-        if let val = getBuffer(at: point) {
-            return val >> rotation & 0b1
+    override func getBuffer(at: Vec2) -> Int? {
+        if let val = super.getBuffer(at: at) {
+            return val >> variant & 0b1
         }
         
         return nil
     }
     
-    func addRotation(data: [Int]) {
+    func addVariant(data: [Int]) {
         if (data.count != region.count) {
             return
         }
@@ -64,11 +64,11 @@ class Tetromino: Bitboard {
             let point = Vec2(region.x + index % region.w, region.y + index / region.w)
             
             if data[index] > 0 {
-                let v = getBuffer(at: point)! | 1 << rotationNum
+                let v = super.getBuffer(at: point)! | 1 << variantsNum
                 setBuffer(at: point, value: v)
             }
         }
         
-        rotationNum += 1
+        variantsNum += 1
     }
 }

@@ -12,7 +12,7 @@ class Tetris: Bitboard {
         for i in 0..<tetromino.buffer.count {
             let point = tetromino.toPoint(index: i)
             
-            if (tetromino.getBufferWithRotation(point: point) != 0 &&
+            if (tetromino.getBuffer(at: point) != 0 &&
                 getBuffer(at: point) != 0) {
                 return false
             }
@@ -25,13 +25,13 @@ class Tetris: Bitboard {
         for i in 0..<tetromino.buffer.count {
             let point = tetromino.toPoint(index: i)
             
-            if (tetromino.getBufferWithRotation(point: point) != 0) {
+            if (tetromino.getBuffer(at: point) != 0) {
                 setBuffer(at: point, value: tetromino.colorCode)
             }
         }
     }
     
-    func filledRows() -> [Int] {
+    func completedRows() -> [Int] {
         var completedRows: [Int] = []
         
         for y in 0..<region.yMax {
@@ -52,7 +52,7 @@ class Tetris: Bitboard {
         return completedRows
     }
     
-    func removeRow(number: Int) {
+    func releaseRow(number: Int) {
         for y in (0..<number).reversed() {
             for x in 0..<region.xMax {
                 let point = Vec2(x, y)
