@@ -151,7 +151,7 @@ class GameScene: SKScene {
             brickNode.lineWidth = 2
         }
         
-        self.state = GameState(tetris: TetrisBitboard(region: Region(0, 0, wBricks, hBricks)))
+        self.state = GameState(tetris: Tetris(region: Region(0, 0, wBricks, hBricks)))
         self.spawnCounter = 0
         
         span()
@@ -174,7 +174,7 @@ class GameScene: SKScene {
         }
         
         let tetromino = tetrominoCatalog[Int.random(in: 0..<tetrominoCatalog.count)].copy()
-        if self.state?.tetris.canFit(tetromino: tetromino) == true {
+        if self.state?.tetris.fits(tetromino: tetromino) == true {
             self.state?.tetromino = tetromino
             
             self.spawnCounter? += 1
@@ -207,7 +207,7 @@ class GameScene: SKScene {
         let r = state.tetris.region
         for x in r.x..<r.xMax {
             for y in r.y..<r.yMax {
-                if let v = state.tetris.getValue(point: Vec2(x, y)) {
+                if let v = state.tetris.getBuffer(at: Vec2(x, y)) {
                     if v == 0 {
                         continue
                     }
@@ -250,7 +250,7 @@ class GameScene: SKScene {
             let modified = tetromino.copy()
             modified.region.x += dx
             modified.region.y += dy
-            if state?.tetris.canFit(tetromino: modified) == true {
+            if state?.tetris.fits(tetromino: modified) == true {
                 state?.tetromino = modified
                 return true
             }
@@ -269,7 +269,7 @@ class GameScene: SKScene {
                 let copy = tetromino.copy()
                 repeat {
                     copy.region.y += 1
-                } while state?.tetris.canFit(tetromino: copy) == true
+                } while state?.tetris.fits(tetromino: copy) == true
                 
                 copy.region.y -= 1
                 state?.tetromino = copy
@@ -278,7 +278,7 @@ class GameScene: SKScene {
             if let tetromino = state?.tetromino {
                 let copy = tetromino.copy()
                 copy.rotation += 1
-                if state?.tetris.canFit(tetromino: copy) == true {
+                if state?.tetris.fits(tetromino: copy) == true {
                     state?.tetromino = copy
                 }
             }
@@ -304,9 +304,9 @@ class GameScene: SKScene {
             if !move(dy: 1) {
                 if let tetromino = state.tetromino {
                     self.state?.tetris.place(tetromino: tetromino)
-                    if let rows = self.state?.tetris.completedRows() {
+                    if let rows = self.state?.tetris.filledRows() {
                         for r in rows {
-                            self.state?.tetris.removeRows(rowNumber: r)
+                            self.state?.tetris.removeRow(number: r)
                         }
                     }
                     self.state?.tetromino = nil

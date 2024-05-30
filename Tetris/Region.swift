@@ -63,8 +63,4 @@ struct Region {
     func contains(point: Vec2) -> Bool {
         return point.x >= self.x && point.x < self.xMax && point.y >= self.y && point.y < self.yMax
     }
-    
-    func contains(_ another: Region) -> Bool {
-        return another.x >= self.x && another.xMax <= self.xMax && another.y >= self.y && another.yMax <= self.yMax
-    }
 }

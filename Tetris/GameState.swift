@@ -8,12 +8,12 @@
 import Foundation
 
 struct GameState {
-    var tetris: TetrisBitboard
+    var tetris: Tetris
     var tetromino: Tetromino?
     var level: Int = 0
     var gameOver: Bool = false
     
-    init(tetris: TetrisBitboard, tetromino: Tetromino? = nil, level: Int = 0) {
+    init(tetris: Tetris, tetromino: Tetromino? = nil, level: Int = 0) {
         self.tetris = tetris
         self.tetromino = tetromino
         self.level = level

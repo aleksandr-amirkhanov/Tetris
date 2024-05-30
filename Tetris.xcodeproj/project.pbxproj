@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1F1D657F2BFA981500C14E55 /* TetrisBitboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1D657B2BFA981500C14E55 /* TetrisBitboard.swift */; };
+		1F1D657F2BFA981500C14E55 /* Tetris.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1D657B2BFA981500C14E55 /* Tetris.swift */; };
 		1F1D65802BFA981500C14E55 /* Tetromino.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1D657C2BFA981500C14E55 /* Tetromino.swift */; };
 		1F1D65812BFA981500C14E55 /* Bitboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1D657D2BFA981500C14E55 /* Bitboard.swift */; };
 		1F1D65822BFA981500C14E55 /* Vec2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1D657E2BFA981500C14E55 /* Vec2.swift */; };
@@ -24,7 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1F1D657B2BFA981500C14E55 /* TetrisBitboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TetrisBitboard.swift; sourceTree = "<group>"; };
+		1F1D657B2BFA981500C14E55 /* Tetris.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tetris.swift; sourceTree = "<group>"; };
 		1F1D657C2BFA981500C14E55 /* Tetromino.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tetromino.swift; sourceTree = "<group>"; };
 		1F1D657D2BFA981500C14E55 /* Bitboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bitboard.swift; sourceTree = "<group>"; };
 		1F1D657E2BFA981500C14E55 /* Vec2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vec2.swift; sourceTree = "<group>"; };
@@ -74,7 +74,7 @@
 			children = (
 				1F1D65832BFA983500C14E55 /* Region.swift */,
 				1F1D657D2BFA981500C14E55 /* Bitboard.swift */,
-				1F1D657B2BFA981500C14E55 /* TetrisBitboard.swift */,
+				1F1D657B2BFA981500C14E55 /* Tetris.swift */,
 				1F1D657C2BFA981500C14E55 /* Tetromino.swift */,
 				1F1D657E2BFA981500C14E55 /* Vec2.swift */,
 				1FD227382BCADDE800735F6A /* AppDelegate.swift */,
@@ -169,7 +169,7 @@
 				1F5DA44F2C010259007A41E0 /* GameState.swift in Sources */,
 				1FD227412BCADDE800735F6A /* ViewController.swift in Sources */,
 				1F1D65842BFA983500C14E55 /* Region.swift in Sources */,
-				1F1D657F2BFA981500C14E55 /* TetrisBitboard.swift in Sources */,
+				1F1D657F2BFA981500C14E55 /* Tetris.swift in Sources */,
 				1FD2273F2BCADDE800735F6A /* GameScene.swift in Sources */,
 				1FD227392BCADDE800735F6A /* AppDelegate.swift in Sources */,
 				1F1D65802BFA981500C14E55 /* Tetromino.swift in Sources */,
