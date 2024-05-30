@@ -20,6 +20,7 @@ class GameScene: SKScene {
     fileprivate var brickSize: Int?
     fileprivate var brickNode: SKShapeNode?
     fileprivate var usedNodes: [SKShapeNode] = []
+    fileprivate var labelNode: SKLabelNode?
     
     fileprivate var tetrominoCatalog: [Tetromino] = [
         Tetromino(region: Region(Vec2(3, -1), Vec2(4, 4)),
@@ -144,6 +145,15 @@ class GameScene: SKScene {
             brickNode.lineWidth = 2
         }
         
+        labelNode = SKLabelNode.init(fontNamed: "AndaleMono")
+        if let labelNode {
+            labelNode.fontSize = 14
+            labelNode.verticalAlignmentMode = SKLabelVerticalAlignmentMode.center
+            labelNode.position = CGPoint(x: 0, y: (self.size.height + CGFloat(brickSize * hBricks)) / 4)
+            labelNode.text = "Hello world"
+            self.addChild(labelNode)
+        }
+        
         self.state = GameState(tetris: Tetris(region: Region(0, 0, wBricks, hBricks)))
         
         span()
@@ -172,9 +182,9 @@ class GameScene: SKScene {
         }
         
         self.state?.spawnCounter += 1
-        if let label = self.childNode(withName: "Level") {
+        if let labelNode {
             if let level = self.state?.level {
-                (label as? SKLabelNode)?.text = "level: " + String(level)
+                labelNode.text = "level: " + String(level)
             }
         }
     }
