@@ -10,21 +10,13 @@ import GameplayKit
 
 class GameScene: SKScene {
     // Game options
-    let wBricks = 10
-    let hBricks = 20
-    let padding = 20
-    
-    let initialSpeed: Float = 0.5
-    let spawnsInLevel = 3
-    let acceleration: Float = 1.1
-    
-    var spawnCounter: Int?
-    
+    fileprivate let wBricks = 10
+    fileprivate let hBricks = 20
+    fileprivate let padding = 20
     fileprivate var state: GameState?
     
+    // Rendering
     fileprivate var lastUpdate: TimeInterval?
-    
-    // Visualisation
     fileprivate var brickSize: Int?
     fileprivate var brickNode: SKShapeNode?
     fileprivate var usedNodes: [SKShapeNode] = []
@@ -129,13 +121,13 @@ class GameScene: SKScene {
                            6: SKColor(red: 5/255, green: 148/255, blue: 0, alpha: 1),
                            7: SKColor(red: 149/255, green: 122/255, blue: 0, alpha: 1)]
     
-    fileprivate let backgroundColour1 = NSColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1)
-    fileprivate let backgroundColour2 = NSColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1)
+    fileprivate let backgroundColour = NSColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1)
+    fileprivate let fieldColour = NSColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1)
     fileprivate let gameOverColour = NSColor.darkGray
     fileprivate let defaultColour = NSColor.darkGray
         
     override func didMove(to view: SKView) {
-        self.backgroundColor = backgroundColour1
+        self.backgroundColor = backgroundColour
         
         let brickSize = Int(min((self.size.width - 2 * CGFloat(padding)) / CGFloat(wBricks),
                             (self.size.height - 2 * CGFloat(padding)) / CGFloat(hBricks)).rounded(.towardZero))
@@ -143,8 +135,8 @@ class GameScene: SKScene {
         
         let frameNode = SKShapeNode.init(rectOf: CGSize(width: brickSize * wBricks, height: brickSize * hBricks))
         frameNode.lineWidth = 1
-        frameNode.strokeColor = backgroundColour2
-        frameNode.fillColor = backgroundColour2
+        frameNode.strokeColor = fieldColour
+        frameNode.fillColor = fieldColour
         self.addChild(frameNode)
         
         self.brickNode = SKShapeNode.init(rectOf: CGSize.init(width: brickSize, height: brickSize))
@@ -153,16 +145,13 @@ class GameScene: SKScene {
         }
         
         self.state = GameState(tetris: Tetris(region: Region(0, 0, wBricks, hBricks)))
-        self.spawnCounter = 0
         
         span()
     }
     
-    fileprivate func locate(x: Int, y: Int, brickSize: Int) -> CGPoint {
-        let ox = -brickSize * (wBricks - 1) / 2
-        let oy = brickSize * (hBricks - 1) / 2
-        
-        return CGPoint(x: ox + x * brickSize, y: oy - y * brickSize)
+    fileprivate func locate(point: Vec2, brickSize: Int) -> CGPoint {
+        let origin = Vec2(-brickSize * (wBricks - 1) / 2, brickSize * (hBricks - 1) / 2)
+        return CGPoint(x: origin.x + point.x * brickSize, y: origin.y - point.y * brickSize)
     }
     
     fileprivate func span() {
@@ -170,26 +159,22 @@ class GameScene: SKScene {
             return
         }
         
-        guard !state.gameOver else {
+        guard !state.isGameOver else {
             return
         }
         
         let tetromino = tetrominoCatalog[Int.random(in: 0..<tetrominoCatalog.count)].copy()
         if self.state?.tetris.fits(tetromino: tetromino) == true {
             self.state?.tetromino = tetromino
-            
-            self.spawnCounter? += 1
-            if self.spawnCounter == spawnsInLevel {
-                self.state?.level += 1
-                self.spawnCounter = 0
-            }
         } else {
-            self.state?.gameOver = true
+            self.state?.isGameOver = true
             state.tetris.place(tetromino: tetromino)
         }
+        
+        self.state?.spawnCounter += 1
     }
     
-    fileprivate func updateVisuals() {
+    fileprivate func updateView() {
         guard let brickSize else {
             return
         }
@@ -208,16 +193,17 @@ class GameScene: SKScene {
         let r = state.tetris.region
         for x in r.x..<r.xMax {
             for y in r.y..<r.yMax {
-                if let v = state.tetris.getBuffer(at: Vec2(x, y)) {
+                let point = Vec2(x, y)
+                if let v = state.tetris.getBuffer(at: point) {
                     if v == 0 {
                         continue
                     }
                     
                     let n = brickNode.copy() as! SKShapeNode
                     
-                    n.position = locate(x: x, y: y, brickSize: brickSize)
-                    n.strokeColor = backgroundColour2
-                    n.fillColor = state.gameOver ? gameOverColour : colours[v] ?? defaultColour
+                    n.position = locate(point: point, brickSize: brickSize)
+                    n.strokeColor = fieldColour
+                    n.fillColor = state.isGameOver ? gameOverColour : colours[v] ?? defaultColour
                     self.addChild(n)
                     usedNodes.append(n)
                 }
@@ -228,16 +214,17 @@ class GameScene: SKScene {
             let r = tetromino.region
             for x in r.x..<r.xMax {
                 for y in r.y..<r.yMax {
-                    if let v = state.tetromino?.getBuffer(at: Vec2(x, y)) {
+                    let point = Vec2(x, y)
+                    if let v = state.tetromino?.getBuffer(at: point) {
                         if v == 0 {
                             continue
                         }
                         
                         let n = brickNode.copy() as! SKShapeNode
                         
-                        n.position = locate(x: x, y: y, brickSize: brickSize)
-                        n.strokeColor = backgroundColour2
-                        n.fillColor = state.gameOver ? gameOverColour : colours[tetromino.colorCode] ?? defaultColour
+                        n.position = locate(point: point, brickSize: brickSize)
+                        n.strokeColor = fieldColour
+                        n.fillColor = state.isGameOver ? gameOverColour : colours[tetromino.colorCode] ?? defaultColour
                         self.addChild(n)
                         usedNodes.append(n)
                     }
@@ -284,7 +271,7 @@ class GameScene: SKScene {
                 }
             }
         }
-        updateVisuals()
+        updateView()
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -293,7 +280,7 @@ class GameScene: SKScene {
         }
         
         guard let lastUpdate else {
-            updateVisuals()
+            updateView()
             self.lastUpdate = currentTime
             
             return
@@ -301,7 +288,7 @@ class GameScene: SKScene {
         
         let delta = currentTime - lastUpdate
         
-        if Float(delta) > initialSpeed / powf(acceleration, Float(state.level)) {
+        if Float(delta) > state.speed {
             if !move(dy: 1) {
                 if let tetromino = state.tetromino {
                     self.state?.tetris.place(tetromino: tetromino)
@@ -314,7 +301,7 @@ class GameScene: SKScene {
                     span()
                 }
             }
-            updateVisuals()
+            updateView()
             self.lastUpdate = currentTime
         }
     }

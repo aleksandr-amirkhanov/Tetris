@@ -8,14 +8,25 @@
 import Foundation
 
 struct GameState {
-    var tetris: Tetris
-    var tetromino: Tetromino?
-    var level: Int = 0
-    var gameOver: Bool = false
+    // Options, which are set before the game starts
+    let tetris: Tetris
+    let initialSpeed: Float = 0.5
+    let acceleration: Float = 1.1
+    let spawnsInLevel = 3
     
-    init(tetris: Tetris, tetromino: Tetromino? = nil, level: Int = 0) {
+    // Options, which can be changed during the game
+    var tetromino: Tetromino?
+    var isGameOver: Bool = false
+    var spawnCounter: Int = 0
+    var level: Int {
+        return spawnCounter / spawnsInLevel
+    }
+    var speed: Float {
+        return initialSpeed / powf(acceleration, Float(level))
+    }
+    
+    init(tetris: Tetris, tetromino: Tetromino? = nil) {
         self.tetris = tetris
         self.tetromino = tetromino
-        self.level = level
     }
 }
