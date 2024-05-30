@@ -207,7 +207,7 @@ class GameScene: SKScene {
         let r = state.tetris.region
         for x in r.x..<r.xMax {
             for y in r.y..<r.yMax {
-                if let v = state.tetris.getBufferValue(x, y) {
+                if let v = state.tetris.getValue(point: Vec2(x, y)) {
                     if v == 0 {
                         continue
                     }
@@ -227,7 +227,7 @@ class GameScene: SKScene {
             let r = tetromino.region
             for x in r.x..<r.xMax {
                 for y in r.y..<r.yMax {
-                    if let v = state.tetromino?.getBufferWithRotation(x, y) {
+                    if let v = state.tetromino?.getBufferWithRotation(point: Vec2(x, y)) {
                         if v == 0 {
                             continue
                         }

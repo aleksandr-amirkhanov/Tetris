@@ -10,12 +10,12 @@ import Foundation
 class TetrisBitboard: Bitboard {
     func canFit(tetromino: Tetromino) -> Bool {
         for i in 0..<tetromino.buffer.count {
-            let (x, y) = tetromino.getRegionIndex(i)
+            let point = tetromino.getRegionIndex(i)
             
-            let val1 = tetromino.getBufferWithRotation(x, y)
+            let val1 = tetromino.getBufferWithRotation(point: point)
             if (val1 == 0) { continue }
             
-            if getBufferValue(x, y) ?? 1 == 0 {
+            if getValue(point: point) ?? 1 == 0 {
                 continue
             }
             
@@ -27,12 +27,12 @@ class TetrisBitboard: Bitboard {
     
     func place(tetromino: Tetromino) {
         for i in 0..<tetromino.buffer.count {
-            let (x, y) = tetromino.getRegionIndex(i)
+            let point = tetromino.getRegionIndex(i)
             
-            let val1 = tetromino.getBufferWithRotation(x, y)
+            let val1 = tetromino.getBufferWithRotation(point: point)
             if (val1 == 0) { continue }
             
-            setBufferValue(x, y, tetromino.colorCode)
+            setValue(point: point, val: tetromino.colorCode)
         }
     }
     
@@ -41,7 +41,7 @@ class TetrisBitboard: Bitboard {
         for y in 0..<region.yMax {
             var isCompleted = true
             for x in 0..<region.xMax {
-                let val = getBufferValue(x, y)
+                let val = getValue(point: Vec2(x, y))
                 if val == nil || val == 0 {
                     isCompleted = false
                 }
@@ -59,9 +59,10 @@ class TetrisBitboard: Bitboard {
         let yEnd = rowNumber
         for y in (0..<yEnd).reversed() {
             for x in 0..<region.xMax {
-                if let val = getBufferValue(x, y) {
-                    setBufferValue(x, y + 1, val)
-                    setBufferValue(x, y, 0)
+                let point = Vec2(x, y)
+                if let val = getValue(point: point) {
+                    setValue(point: point + Vec2(0, 1), val: val)
+                    setValue(point: point, val: 0)
                 }
             }
         }

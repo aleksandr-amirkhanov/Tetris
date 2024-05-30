@@ -47,8 +47,8 @@ class Tetromino: Bitboard {
         return copy
     }
     
-    func getBufferWithRotation(_ x: Int, _ y: Int) -> Int? {
-        if let val = getBufferValue(x, y) {
+    func getBufferWithRotation(point: Vec2) -> Int? {
+        if let val = getValue(point: point) {
             return val >> rotation & 0b1
         }
         
@@ -61,12 +61,11 @@ class Tetromino: Bitboard {
         }
         
         for index in 0..<data.count {
-            let x = region.x + index % region.w
-            let y = region.y + index / region.w
+            let point = Vec2(region.x + index % region.w, region.y + index / region.w)
             
             if data[index] > 0 {
-                let v = getBufferValue(x, y)! | 1 << rotationNum
-                setBufferValue(x, y, v)
+                let v = getValue(point: point)! | 1 << rotationNum
+                setValue(point: point, val: v)
             }
         }
         

@@ -28,33 +28,27 @@ class Bitboard {
         b = Array(repeating: 0, count: region.w * region.h)
     }
     
-    func setBufferValue(_ x: Int, _ y: Int, _ val: Int) {
-        guard region.contains(x, y) else {
+    func setValue(point: Vec2, val: Int) {
+        guard region.contains(point: point) else {
             return
         }
         
-        buffer[getBufferIndex(x, y)] = val
+        buffer[getBufferIndex(point: point)] = val
     }
     
-    func getBufferValue(_ x: Int, _ y: Int) -> Int? {
-        guard region.contains(x, y) else {
+    func getValue(point: Vec2) -> Int? {
+        guard region.contains(point: point) else {
             return nil
         }
         
-        return buffer[getBufferIndex(x, y)]
+        return buffer[getBufferIndex(point: point)]
     }
     
-    func modifyBuffer(modifier: (Int) -> Int) {
-        for i in 0..<buffer.count {
-            buffer[i] = modifier(buffer[i])
-        }
+    fileprivate func getBufferIndex(point: Vec2) -> Int {
+        return point.x - region.x + (point.y - region.y) * region.w
     }
     
-    private func getBufferIndex(_ x: Int, _ y: Int) -> Int {
-        return x - region.x + (y - region.y) * region.w
-    }
-    
-    func getRegionIndex(_ i: Int) -> (Int, Int) {
-        return (i % region.w + region.x, Int(i / region.w) + region.y)
+    internal func getRegionIndex(_ i: Int) -> Vec2 {
+        return Vec2(i % region.w + region.x, Int(i / region.w) + region.y)
     }
 }

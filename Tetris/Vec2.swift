@@ -14,4 +14,8 @@ struct Vec2 {
         self.x = x
         self.y = y
     }
+    
+    static func + (left: Vec2, right: Vec2) -> Vec2 {
+        return Vec2(left.x + right.x, left.y + right.y)
+    }
 }
