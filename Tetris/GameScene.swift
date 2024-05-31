@@ -114,21 +114,20 @@ class GameScene: SKScene {
                           0, 0, 0, 0]],
                   colorCode: 7)]
     
-    fileprivate var colours = [1: SKColor(red: 203/255, green: 19/255, blue: 10/255, alpha: 1),
-                           2: SKColor(red: 0, green: 131/255, blue: 175/255, alpha: 1),
-                           3: SKColor(red: 199/255, green: 84/255, blue: 0, alpha: 1),
-                           4: SKColor(red: 0, green: 32/255, blue: 192/255, alpha: 1),
-                           5: SKColor(red: 141/255, green: 5/255, blue: 141/255, alpha: 1),
-                           6: SKColor(red: 5/255, green: 148/255, blue: 0, alpha: 1),
-                           7: SKColor(red: 149/255, green: 122/255, blue: 0, alpha: 1)]
+    fileprivate let backgroundColor1 = NSColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1)
+    fileprivate let backgroundColor2 = NSColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1)
     
-    fileprivate let backgroundColour = NSColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1)
-    fileprivate let fieldColour = NSColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1)
-    fileprivate let gameOverColour = NSColor.darkGray
-    fileprivate let defaultColour = NSColor.darkGray
-        
+    fileprivate var colors = [1: SKColor(red: 203/255, green: 19/255, blue: 10/255, alpha: 1),
+                              2: SKColor(red: 0, green: 131/255, blue: 175/255, alpha: 1),
+                              3: SKColor(red: 199/255, green: 84/255, blue: 0, alpha: 1),
+                              4: SKColor(red: 0, green: 32/255, blue: 192/255, alpha: 1),
+                              5: SKColor(red: 141/255, green: 5/255, blue: 141/255, alpha: 1),
+                              6: SKColor(red: 5/255, green: 148/255, blue: 0, alpha: 1),
+                              7: SKColor(red: 149/255, green: 122/255, blue: 0, alpha: 1)]
+    fileprivate let gameOverColor = NSColor.darkGray
+    
     override func didMove(to view: SKView) {
-        self.backgroundColor = backgroundColour
+        self.backgroundColor = backgroundColor1
         
         let brickSize = Int(min((self.size.width - 2 * CGFloat(padding)) / CGFloat(wBricks),
                             (self.size.height - 2 * CGFloat(padding)) / CGFloat(hBricks)).rounded(.towardZero))
@@ -136,8 +135,8 @@ class GameScene: SKScene {
         
         let frameNode = SKShapeNode.init(rectOf: CGSize(width: brickSize * wBricks, height: brickSize * hBricks))
         frameNode.lineWidth = 1
-        frameNode.strokeColor = fieldColour
-        frameNode.fillColor = fieldColour
+        frameNode.strokeColor = backgroundColor2
+        frameNode.fillColor = backgroundColor2
         self.addChild(frameNode)
         
         self.brickNode = SKShapeNode.init(rectOf: CGSize.init(width: brickSize, height: brickSize))
@@ -217,8 +216,10 @@ class GameScene: SKScene {
                     let n = brickNode.copy() as! SKShapeNode
                     
                     n.position = locate(point: point, brickSize: brickSize)
-                    n.strokeColor = fieldColour
-                    n.fillColor = state.isGameOver ? gameOverColour : colours[v] ?? defaultColour
+                    n.strokeColor = backgroundColor2
+                    if let color = colors[v] {
+                        n.fillColor = state.isGameOver ? gameOverColor : color
+                    }
                     self.addChild(n)
                     usedNodes.append(n)
                 }
@@ -238,8 +239,10 @@ class GameScene: SKScene {
                         let n = brickNode.copy() as! SKShapeNode
                         
                         n.position = locate(point: point, brickSize: brickSize)
-                        n.strokeColor = fieldColour
-                        n.fillColor = state.isGameOver ? gameOverColour : colours[tetromino.colorCode] ?? defaultColour
+                        n.strokeColor = backgroundColor2
+                        if let color = colors[tetromino.colorCode] {
+                            n.fillColor = state.isGameOver ? gameOverColor : color
+                        }
                         self.addChild(n)
                         usedNodes.append(n)
                     }
